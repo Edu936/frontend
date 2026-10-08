@@ -7,9 +7,44 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
 
+  const [mensagem, setMensagem] = useState("");
+  const [carregando, setCarregando] = useState(false);
+
+  async function chamarAPI() {
+    setCarregando(true);
+     
+    try {
+      const resposta = await fetch(
+        "http://localhost:8080/teste"
+      );
+
+      if (!resposta.ok) {
+        throw new Error("Erro na requisição");
+      }
+
+      const dados = await resposta.text();
+
+      setMensagem(dados);
+
+    } catch (error) {
+      console.error(error);
+      setMensagem("Erro ao conectar com API");
+    } finally {
+      setCarregando(false)
+    }
+
+    
+  }
+
   return (
     <>
       <section id="center">
+        <h1>Frontend React + API em Java</h1>
+
+        <button onClick={chamarAPI}>Chamar API</button>  
+
+        <p>{carregando? "Carregando....": mensagem}</p>
+
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
           <img src={reactLogo} className="framework" alt="React logo" />
